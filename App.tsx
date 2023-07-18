@@ -57,7 +57,7 @@ async function registerForPushNotificationsAsync() {
 }
 
 const httpLink = createHttpLink({
-  uri: "http://192.168.1.157:4000",
+  uri: "http://192.168.1.26:4000",
 });
 
 const authLink = setContext(async (_, { headers }) => {
