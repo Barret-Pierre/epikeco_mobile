@@ -2,14 +2,18 @@ import React, { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { readChallengeLeaderboard } from "../graphql/readChallengeLeaderboard";
 import { IUserToChallenge } from "../interfaces/IUserToChallenge";
-import { useParams } from "react-router-dom";
+import { Text, View } from "react-native";
+import { ListItem } from "@rneui/base";
+import { IParticipantChallenge } from "../interfaces/IChallenge";
 
 interface ChallengeLeaderboardData {
   readChallengeLeaderboard: IUserToChallenge[];
 }
 
-const Leaderboard = () => {
-  const { challengeId } = useParams<{ challengeId: string }>();
+const Leaderboard = (props: {
+  challengeWithParticipant: IParticipantChallenge;
+}) => {
+  const challengeId = props.challengeWithParticipant.id;
   const { loading, error, data } = useQuery<ChallengeLeaderboardData>(
     readChallengeLeaderboard,
     {
@@ -36,32 +40,23 @@ const Leaderboard = () => {
   // userToChallenges.sort((a, b) => b.challengeScore - a.challengeScore);
 
   return (
-    <div>
-      <h2>Classement du challenge</h2>
-      {userToChallenges.length !== 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Position</th>
-              <th>Nom</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userToChallenges.map((userToChallenge, index) => (
-              <tr key={userToChallenge.user?.id}>
-                <td>{index + 1}</td>
-                <td>{userToChallenge.user?.name}</td>
-                <td>{userToChallenge.challengeScore}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}{" "}
+    <View>
+      <Text>Classement du challenge</Text>
+      {userToChallenges.length !== 0 &&
+        userToChallenges.map((userToChallenge, index) => (
+          <ListItem key={userToChallenge.user?.id}>
+            <td>{index + 1}</td>
+            <ListItem.Content>
+              <ListItem.Title>
+                {userToChallenge.user?.name} ({userToChallenge.challengeScore})
+              </ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+        ))}{" "}
       {userToChallenges.length === 0 && (
-        <p>Aucun utilisateur dans le classement.</p>
+        <Text>Aucun utilisateur dans le classement.</Text>
       )}
-    </div>
+    </View>
   );
 };
 
