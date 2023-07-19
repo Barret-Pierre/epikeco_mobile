@@ -5,32 +5,22 @@ import { useEffect, useState } from "react";
 import ChallengeDetails from "../components/ChallengeDetails";
 import { useQuery } from "@apollo/client";
 import { readOneChallenge } from "../graphql/readOneChallenge";
-import { IChallenge } from "../interfaces/IChallenge";
+import { IParticipantChallenge } from "../interfaces/IChallenge";
 
 export function Dashboard() {
-  const { user, logout } = useUser();
+  const { user } = useUser();
   const [challengeId, setChallengeId] = useState("");
-  const [challenge, setChallenge] = useState(undefined);
 
-  const { data, refetch, error } = useQuery<{ readOneChallenge: IChallenge }>(
-    readOneChallenge,
-    {
-      variables: { challengeId },
-      fetchPolicy: "cache-and-network",
-    }
-  );
+  const { data, error } = useQuery<{
+    readOneChallenge: IParticipantChallenge;
+  }>(readOneChallenge, {
+    variables: { challengeId },
+    fetchPolicy: "cache-and-network",
+  });
 
   useEffect(() => {
-    console.log("Got data:", data);
+    console.log("Got data:", JSON.stringify(data, null, 4));
     console.log("Got error:", JSON.stringify(error, null, 4));
-
-    // if (data) {
-    //   if (data.readOneChallenge) {
-    //     setChallenge(data.readOneChallenge);
-    //   } else {
-    //     setChallenge(undefined);
-    //   }
-    // }
   }, [data, error]);
 
   useEffect(() => {
@@ -39,15 +29,14 @@ export function Dashboard() {
 
   return (
     <View>
-      <Button onPress={logout} title="Singout"></Button>
-      <Text>Dashboard</Text>
       <Text>
         Hello {user?.email} vous avez l'id {user?.id}
       </Text>
-      <ChallengesList onSelect={setChallengeId} onRefetchChallenge={() => {}} />
-      {challengeId && <Text>{challengeId}</Text>}
+      <ChallengesList onSelect={setChallengeId} />
 
-      {challenge && <ChallengeDetails challenge={challenge} />}
+      {data && (
+        <ChallengeDetails challengeWithParticipant={data.readOneChallenge} />
+      )}
     </View>
   );
 }

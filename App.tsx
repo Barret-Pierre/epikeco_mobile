@@ -15,6 +15,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
+import Header from "./components/Header";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -57,7 +58,7 @@ async function registerForPushNotificationsAsync() {
 }
 
 const httpLink = createHttpLink({
-  uri: "http://192.168.1.26:4000",
+  uri: "http://192.168.1.157:4000",
 });
 
 const authLink = setContext(async (_, { headers }) => {
@@ -107,6 +108,7 @@ function App() {
     <ApolloProvider client={client}>
       <NavigationContainer>
         <UserProvider>
+          <Header />
           <Router />
         </UserProvider>
       </NavigationContainer>

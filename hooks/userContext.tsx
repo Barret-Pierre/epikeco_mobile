@@ -40,7 +40,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (user === null) {
-      navigate("Signin" as never);
+      reset({
+        index: 0,
+        routes: [{ name: "Signin" } as never],
+      });
     } else if (user) {
       reset({
         index: 0,
