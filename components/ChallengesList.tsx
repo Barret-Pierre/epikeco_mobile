@@ -7,10 +7,8 @@ import { SelectList } from "react-native-dropdown-select-list";
 
 const ChallengesList = ({
   onSelect,
-  onRefetchChallenge,
 }: {
   onSelect: (challengeId: string) => void;
-  onRefetchChallenge: () => void;
 }) => {
   const { data } = useQuery<{ readMyChallenges: IChallenge[] }>(
     readMyChallenges,
@@ -20,11 +18,9 @@ const ChallengesList = ({
 
   useEffect(() => {
     onSelect(selectedChallengeId);
-    console.log("SELECTEDChallengeId", selectedChallengeId);
-    onRefetchChallenge();
   }, [selectedChallengeId]);
 
-  console.log("All challenges dashboard", data);
+  console.log("All challenges dashboard", JSON.stringify(data, null, 4));
 
   const formatData = (data: { readMyChallenges: IChallenge[] }) => {
     const newData = [];
