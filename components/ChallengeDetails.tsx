@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../hooks/userContext";
 import { IParticipantChallenge } from "../interfaces/IChallenge";
-import { Text, View } from "react-native";
 import ReadChallenge from "./ReadChallenge";
 import ActionsList from "./ActionsList";
 import Leaderboard from "./Leaderboard";
+import { Tab } from "@rneui/themed";
+import { StyleSheet, View } from "react-native";
 
 const ChallengeDetails = ({
   challengeWithParticipant,
@@ -16,6 +17,7 @@ const ChallengeDetails = ({
     null
   );
   const [userToChallengeId, setUserToChallengeId] = useState<string>("");
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     for (const userToChallenge of challengeWithParticipant.userToChallenges) {
@@ -34,17 +36,47 @@ const ChallengeDetails = ({
 
   return (
     <View>
-      <ReadChallenge
-        challengeWithParticipant={challengeWithParticipant}
-        userToChallengeId={Number(userToChallengeId)}
-        toggleUserStatus={setUserStatus}
-        userStatus={userStatus}
-      />
-      <ActionsList
-        challenge={challengeWithParticipant}
-        userStatus={userStatus}
-      />
-      <Leaderboard challengeId={challengeWithParticipant.id} />
+      {index === 0 ? (
+        <ReadChallenge
+          challengeWithParticipant={challengeWithParticipant}
+          userToChallengeId={Number(userToChallengeId)}
+          toggleUserStatus={setUserStatus}
+          userStatus={userStatus}
+        />
+      ) : index === 1 ? (
+        <ActionsList
+          challenge={challengeWithParticipant}
+          userStatus={userStatus}
+        />
+      ) : (
+        <Leaderboard challengeId={challengeWithParticipant.id} />
+      )}
+
+      <Tab
+        value={index}
+        onChange={(e) => setIndex(e)}
+        indicatorStyle={{
+          backgroundColor: "white",
+          height: 3,
+        }}
+        variant="primary"
+      >
+        <Tab.Item
+          title="Infos"
+          titleStyle={{ fontSize: 12 }}
+          icon={{ name: "information-circle", type: "ionicon", color: "white" }}
+        />
+        <Tab.Item
+          title="Taches"
+          titleStyle={{ fontSize: 12 }}
+          icon={{ name: "leaf", type: "ionicon", color: "white" }}
+        />
+        <Tab.Item
+          title="Classement"
+          titleStyle={{ fontSize: 12 }}
+          icon={{ name: "medal", type: "material-community", color: "white" }}
+        />
+      </Tab>
     </View>
   );
 };
