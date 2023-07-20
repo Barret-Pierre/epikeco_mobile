@@ -1,4 +1,4 @@
-import { Button, Text, View } from "react-native";
+import { Button, ScrollView, Text, View } from "react-native";
 import { useUser } from "../hooks/userContext";
 import ChallengesList from "../components/ChallengesList";
 import { useEffect, useState } from "react";
@@ -28,7 +28,7 @@ export function Dashboard() {
   }, [challengeId]);
 
   return (
-    <View>
+    <ScrollView>
       <Text>
         Hello {user?.email} vous avez l'id {user?.id}
       </Text>
@@ -37,6 +37,6 @@ export function Dashboard() {
       {data && (
         <ChallengeDetails challengeWithParticipant={data.readOneChallenge} />
       )}
-    </View>
+    </ScrollView>
   );
 }

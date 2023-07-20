@@ -11,11 +11,6 @@ const ActionsList = (props: {
   return (
     <View>
       <Text>Actions:</Text>
-      {props.userStatus === "owner" &&
-        props.challenge.is_in_progress === false && (
-          <button onClick={props.toggleEditableActionsMode}>Modifier</button>
-        )}
-
       {props.challenge.actions.map((action: IAction) => {
         return <ActionTile action={action} challenge={props.challenge} />;
       })}
