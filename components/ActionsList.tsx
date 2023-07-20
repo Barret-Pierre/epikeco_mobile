@@ -12,7 +12,13 @@ const ActionsList = (props: {
     <View>
       <Text>Actions:</Text>
       {props.challenge.actions.map((action: IAction) => {
-        return <ActionTile action={action} challenge={props.challenge} />;
+        return (
+          <ActionTile
+            action={action}
+            challenge={props.challenge}
+            key={action.id}
+          />
+        );
       })}
     </View>
   );

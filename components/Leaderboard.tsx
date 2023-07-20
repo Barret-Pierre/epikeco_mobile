@@ -6,7 +6,6 @@ import { Text, View } from "react-native";
 import { IChallenge, IParticipantChallenge } from "../interfaces/IChallenge";
 import { ListItem } from "@rneui/themed";
 
-
 interface ChallengeLeaderboardData {
   readChallengeLeaderboard: IUserToChallenge[];
 }
@@ -35,7 +34,7 @@ const Leaderboard = (props: { challengeId: string }) => {
           <Text>Classement du challenge</Text>
           {userToChallenges.length !== 0 &&
             userToChallenges.map((userToChallenge, index) => (
-              <ListItem key={userToChallenge.user?.id}>
+              <ListItem key={index}>
                 <Text>{index + 1}</Text>
                 <ListItem.Content>
                   <ListItem.Title>{userToChallenge.user?.name}</ListItem.Title>

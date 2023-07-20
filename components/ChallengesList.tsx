@@ -12,7 +12,7 @@ const ChallengesList = ({
 }) => {
   const { data } = useQuery<{ readMyChallenges: IChallenge[] }>(
     readMyChallenges,
-    { fetchPolicy: "cache-and-network" }
+    { variables: { filter: "isInProgress" }, fetchPolicy: "cache-and-network" }
   );
   const [selectedChallengeId, setSelectedChallengeId] = useState("");
 
