@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const readMyChallenges = gql`
-  query ReadMyChallenges {
-    readMyChallenges {
+  query ReadMyChallenges($filter: String) {
+    readMyChallenges(filter: $filter) {
       actions {
         id
         description

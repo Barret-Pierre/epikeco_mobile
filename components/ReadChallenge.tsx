@@ -2,7 +2,7 @@ import { IParticipantChallenge } from "../interfaces/IChallenge";
 import { useMutation } from "@apollo/client";
 import { IUser } from "../interfaces/IUser";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
+import { format, differenceInDays } from "date-fns";
 import { Text, View } from "react-native";
 import { Divider, Icon, ListItem } from "@rneui/themed";
 
@@ -19,26 +19,22 @@ const ReadChallenge = (props: {
     if (challenge && challenge.start_date) {
       const today = new Date();
 
-      if (new Date(challenge.end_date) < today) {
-        return "Ce challenge est terminé.";
-      }
+      console.log(challenge);
 
       const challengeStartDate = challenge.start_date
         ? new Date(challenge.start_date)
         : undefined;
 
       if (challengeStartDate) {
-        // Calcul en millisecondes entre aujourd'hui et la date de début du challenge
-        const timeDiff = challengeStartDate.getTime() - today.getTime();
-        // Calcul du nombre de jours restants (1000 = nombre de millisecondes dans une seconde, 3600 secondes dans une heure)
-        const milisecondInADay = 1000 * 3600 * 24;
-        // Math.ceil arrondi à l'entier supérieur
-        const daysRemaining = Math.ceil(timeDiff / milisecondInADay);
-
-        if (daysRemaining === 0) {
+        const daysRemaining = differenceInDays(challengeStartDate, today);
+        if (!challenge.is_in_progress && daysRemaining >= 0) {
+          const daysRemainingLabel = daysRemaining <= 1 ? 1 : daysRemaining;
+          const day = daysRemainingLabel === 1 ? "jour" : "jours";
+          return `Patience ! Le challenge commence dans ${daysRemainingLabel} ${day}.`;
+        } else if (challenge.is_in_progress && daysRemaining <= 0) {
           return "Le challenge est en cours !";
         } else {
-          return `Patience ! Le challenge commence dans ${daysRemaining} jours`;
+          return "Le challenge est terminé.";
         }
       }
     } else {

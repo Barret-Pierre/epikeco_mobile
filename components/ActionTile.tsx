@@ -28,7 +28,7 @@ import {
 import { CheckBoxIconProps } from "@rneui/base/dist/CheckBox/components/CheckBoxIcon";
 
 const ActionTile = (props: { action: IAction; challenge: IChallenge }) => {
-  const startDate = new Date(props.challenge.start_date);
+  const startDate = new Date(props.challenge.start_date).setHours(0, 0, 0, 0);
   const actionId = props.action.id;
   const challengeId = props.challenge.id;
 
