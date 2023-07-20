@@ -2,18 +2,19 @@ import React, { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { readChallengeLeaderboard } from "../graphql/readChallengeLeaderboard";
 import { IUserToChallenge } from "../interfaces/IUserToChallenge";
-import { useParams } from "react-router-dom";
+import { Text, View } from "react-native";
+import { IChallenge, IParticipantChallenge } from "../interfaces/IChallenge";
+import { ListItem } from "@rneui/themed";
 
 interface ChallengeLeaderboardData {
   readChallengeLeaderboard: IUserToChallenge[];
 }
 
-const Leaderboard = () => {
-  const { challengeId } = useParams<{ challengeId: string }>();
+const Leaderboard = (props: { challengeId: string }) => {
   const { loading, error, data } = useQuery<ChallengeLeaderboardData>(
     readChallengeLeaderboard,
     {
-      variables: { challengeId },
+      variables: { challengeId: props.challengeId },
     }
   );
 
@@ -25,43 +26,28 @@ const Leaderboard = () => {
     }
   }, [data]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  // userToChallenges.sort((a, b) => b.challengeScore - a.challengeScore);
-
   return (
-    <div>
-      <h2>Classement du challenge</h2>
-      {userToChallenges.length !== 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Position</th>
-              <th>Nom</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userToChallenges.map((userToChallenge, index) => (
-              <tr key={userToChallenge.user?.id}>
-                <td>{index + 1}</td>
-                <td>{userToChallenge.user?.name}</td>
-                <td>{userToChallenge.challengeScore}</td>
-              </tr>
+    <View>
+      {loading && <Text>Loading...</Text>}
+      {data && (
+        <View>
+          <Text>Classement du challenge</Text>
+          {userToChallenges.length !== 0 &&
+            userToChallenges.map((userToChallenge, index) => (
+              <ListItem key={userToChallenge.user?.id}>
+                <Text>{index + 1}</Text>
+                <ListItem.Content>
+                  <ListItem.Title>{userToChallenge.user?.name}</ListItem.Title>
+                </ListItem.Content>
+                <Text>{userToChallenge.challengeScore}</Text>
+              </ListItem>
             ))}
-          </tbody>
-        </table>
-      )}{" "}
-      {userToChallenges.length === 0 && (
-        <p>Aucun utilisateur dans le classement.</p>
+          {userToChallenges.length === 0 && (
+            <Text>Aucun utilisateur dans le classement.</Text>
+          )}
+        </View>
       )}
-    </div>
+    </View>
   );
 };
 

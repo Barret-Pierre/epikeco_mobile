@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  ReactComponentElement,
+  SyntheticEvent,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { IAction } from "../interfaces/IAction";
 import { IChallenge } from "../interfaces/IChallenge";
 import { createSuccess } from "../graphql/createSuccess";
@@ -8,16 +14,25 @@ import { addDays } from "date-fns";
 import { readMyChallengeSuccesses } from "../graphql/readMyChallengeSuccess";
 import { deleteMySuccess } from "../graphql/deleteMySuccess";
 import { ISuccess } from "../interfaces/ISuccess";
-import "./ActionTile.scoped.css";
 
 import { readChallengeLeaderboard } from "../graphql/readChallengeLeaderboard";
 
 import { isToday } from "date-fns";
+import { CheckBox, ListItem } from "@rneui/themed";
+import {
+  GestureResponderEvent,
+  NativeSyntheticEvent,
+  NativeTouchEvent,
+  View,
+} from "react-native";
+import { CheckBoxIconProps } from "@rneui/base/dist/CheckBox/components/CheckBoxIcon";
 
 const ActionTile = (props: { action: IAction; challenge: IChallenge }) => {
   const startDate = new Date(props.challenge.start_date);
   const actionId = props.action.id;
   const challengeId = props.challenge.id;
+
+  const [expanded, setExpanded] = useState(false);
 
   const { data } = useQuery<{ readMyChallengeSuccesses: ISuccess[] }>(
     readMyChallengeSuccesses,
@@ -32,10 +47,6 @@ const ActionTile = (props: { action: IAction; challenge: IChallenge }) => {
   const { data: particpant } = useQuery<any>(readChallengeLeaderboard, {
     variables: { challengeId },
   });
-
-  // useEffect(() => {
-  //   console.log("Participant! :", participant)
-  // }, [participant])
 
   const [createSuccessMutation] = useMutation(createSuccess, {
     refetchQueries: [readMyChallengeSuccesses, readChallengeLeaderboard],
@@ -68,16 +79,12 @@ const ActionTile = (props: { action: IAction; challenge: IChallenge }) => {
     return key in successesMap;
   };
 
-  async function validateSuccess(
-    e: React.MouseEvent<HTMLInputElement, MouseEvent>,
-    i: number
-  ) {
-    const target = e.target as HTMLInputElement;
+  async function validateSuccess(value: boolean, i: number) {
     // addDays est une fonction de format/date-fns
     const successDate = format(addDays(startDate, i), "yyyy-MM-dd");
     const successKey = `${successDate}-${actionId}`;
 
-    if (target.checked) {
+    if (!value) {
       try {
         await createSuccessMutation({
           variables: {
@@ -107,7 +114,10 @@ const ActionTile = (props: { action: IAction; challenge: IChallenge }) => {
         });
         console.log("Success removed !");
       } catch (error) {
-        console.log("error with success removed:", error);
+        console.log(
+          "error with success removed:",
+          JSON.stringify(error, null, 4)
+        );
       }
     }
   }
@@ -133,23 +143,24 @@ const ActionTile = (props: { action: IAction; challenge: IChallenge }) => {
       const checkboxStyle = isCurrentDay ? { border: "3px solid #00897b" } : {};
 
       newCheckboxes.push(
-        <div key={i} className="checkbox-card">
-          J{i + 1}
-          <input
-            type="checkbox"
-            onClick={(e) => validateSuccess(e, i)}
-            checked={isChecked(i, actionId)}
-            disabled={isDisabled(i)}
-            style={checkboxStyle}
-          />
-        </div>
+        <CheckBox
+          key={i}
+          checked={isChecked(i, actionId)}
+          disabled={isDisabled(i)}
+          onPress={() => validateSuccess(isChecked(i, actionId), i)}
+          iconType="material-community"
+          checkedIcon="checkbox-outline"
+          uncheckedIcon={"checkbox-blank-outline"}
+          title={`J${i + 1}`}
+        />
       );
     }
     return newCheckboxes;
   }, [successesMap, props.challenge]);
 
   return (
-		<ListItem.Accordion
+    <View>
+      <ListItem.Accordion
         content={
           <ListItem.Content>
             <ListItem.Title>{props.action.title}</ListItem.Title>
@@ -162,44 +173,15 @@ const ActionTile = (props: { action: IAction; challenge: IChallenge }) => {
         }}
       >
         <ListItem>
-          <Avatar
-            rounded
-            source={{
-              uri: 'https://randomuser.me/api/portraits/men/32.jpg',
-            }}
-          />
           <ListItem.Content>
-            <ListItem.Title>John Doe</ListItem.Title>
-            <ListItem.Subtitle>Principle Engineer</ListItem.Subtitle>
+            <ListItem.Title>{props.action.description}</ListItem.Title>
           </ListItem.Content>
         </ListItem>
         <ListItem>
-          <Avatar
-            rounded
-            source={{
-              uri: 'https://randomuser.me/api/portraits/men/36.jpg',
-            }}
-          />
-          <ListItem.Content>
-            <ListItem.Title>Albert</ListItem.Title>
-            <ListItem.Subtitle>Staff Engineer</ListItem.Subtitle>
-          </ListItem.Content>
+          <ListItem.Content>{checkboxes}</ListItem.Content>
         </ListItem>
       </ListItem.Accordion>
-		
-    <li key={props.action.id} className="actionTile">
-      <article className="action-card">
-        <div className="grid">
-          <details>
-            <summary>
-              <h6>{props.action.title}</h6>
-            </summary>
-            <p>{props.action.description}</p>
-            <div className="cards-wrapper">{checkboxes}</div>
-          </details>
-        </div>
-      </article>
-    </li>
+    </View>
   );
 };
 

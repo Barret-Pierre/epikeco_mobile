@@ -44,7 +44,7 @@ const ChallengeDetails = ({
         challenge={challengeWithParticipant}
         userStatus={userStatus}
       />
-      <Leaderboard />
+      <Leaderboard challengeId={challengeWithParticipant.id} />
     </View>
   );
 };
