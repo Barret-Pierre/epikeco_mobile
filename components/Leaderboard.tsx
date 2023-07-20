@@ -6,6 +6,7 @@ import { Text, View } from "react-native";
 import { IChallenge, IParticipantChallenge } from "../interfaces/IChallenge";
 import { ListItem } from "@rneui/themed";
 
+
 interface ChallengeLeaderboardData {
   readChallengeLeaderboard: IUserToChallenge[];
 }
