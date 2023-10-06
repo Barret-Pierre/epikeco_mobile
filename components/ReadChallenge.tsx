@@ -13,7 +13,6 @@ const ReadChallenge = (props: {
   userStatus: "participant" | "owner" | null;
 }) => {
   const challenge = props.challengeWithParticipant;
-  const [isCopied, setIsCopied] = useState(false);
 
   function calculateDaysRemaining() {
     if (challenge && challenge.start_date) {
@@ -47,40 +46,42 @@ const ReadChallenge = (props: {
   }, [challenge]);
 
   return (
-    <View>
-      <Text>{challenge.name}</Text>
-      <Text>
-        Date de début: {format(new Date(challenge.start_date), "yyyy-MM-dd")}
-      </Text>
-      <Text>Durée : {challenge.length}</Text>
-      <Text>Créé par : {challenge.createdBy.name}</Text>
-
-      <Divider />
-
-      <Text>Participants:</Text>
-
+    challenge !== null && (
       <View>
-        {challenge.userToChallenges.map((participant: { user: IUser }) => (
-          <ListItem key={participant.user.id}>
-            <Icon
-              name={
-                participant.user.id === challenge.createdBy.id
-                  ? "crown-circle"
-                  : "account-circle"
-              }
-              type="material-community"
-              color="grey"
-            />
-            <ListItem.Content>
-              <ListItem.Title>{participant.user.name}</ListItem.Title>
-            </ListItem.Content>
-          </ListItem>
-        ))}
-      </View>
+        <Text>{challenge.name}</Text>
+        <Text>
+          Date de début: {format(new Date(challenge.start_date), "yyyy-MM-dd")}
+        </Text>
+        <Text>Durée : {challenge.length}</Text>
+        <Text>Créé par : {challenge.createdBy.name}</Text>
 
-      <Divider />
-      <Text>{calculateDaysRemaining()}</Text>
-    </View>
+        <Divider />
+
+        <Text>Participants:</Text>
+
+        <View>
+          {challenge.userToChallenges.map((participant: { user: IUser }) => (
+            <ListItem key={participant.user.id}>
+              <Icon
+                name={
+                  participant.user.id === challenge.createdBy.id
+                    ? "crown-circle"
+                    : "account-circle"
+                }
+                type="material-community"
+                color="grey"
+              />
+              <ListItem.Content>
+                <ListItem.Title>{participant.user.name}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </View>
+
+        <Divider />
+        <Text>{calculateDaysRemaining()}</Text>
+      </View>
+    )
   );
 };
 

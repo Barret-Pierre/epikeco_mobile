@@ -20,15 +20,17 @@ const ChallengeDetails = ({
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    for (const userToChallenge of challengeWithParticipant.userToChallenges) {
-      const userId = userToChallenge.user.id;
+    if (challengeWithParticipant) {
+      for (const userToChallenge of challengeWithParticipant.userToChallenges) {
+        const userId = userToChallenge.user.id;
 
-      if (user && user.id && userId === user.id) {
-        setUserStatus("participant");
-        setUserToChallengeId(userToChallenge.id);
+        if (user && user.id && userId === user.id) {
+          setUserStatus("participant");
+          setUserToChallengeId(userToChallenge.id);
 
-        if (challengeWithParticipant.createdBy.id === user.id) {
-          setUserStatus("owner");
+          if (challengeWithParticipant.createdBy.id === user.id) {
+            setUserStatus("owner");
+          }
         }
       }
     }

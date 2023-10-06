@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Dashboard } from "./screens/Dashboard";
 import { Signin } from "./screens/Signin";
 import { Signup } from "./screens/Signup";
+import { StyleSheet, View } from "react-native";
 
 const Stack = createStackNavigator();
 

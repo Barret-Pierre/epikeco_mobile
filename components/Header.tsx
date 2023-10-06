@@ -1,12 +1,21 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { useUser } from "../hooks/userContext";
 import { Header as HeaderRNE, HeaderProps, Icon } from "@rneui/themed";
+
+const Logo = () => {
+  return (
+    <Image
+      source={require("../assets/logo.png")}
+      style={{ width: 300, height: 42 }}
+    />
+  );
+};
 
 const Header = () => {
   const { user, logout } = useUser();
   return (
     <HeaderRNE
-      centerComponent={{ text: "Epikeco", style: styles.heading }}
+      leftComponent={<Logo />}
       rightComponent={
         <View>
           {user && (
@@ -18,14 +27,9 @@ const Header = () => {
           )}
         </View>
       }
+      backgroundColor="#ffffff"
     />
   );
 };
-
-const styles = StyleSheet.create({
-  heading: {
-    fontSize: 28,
-  },
-});
 
 export default Header;
